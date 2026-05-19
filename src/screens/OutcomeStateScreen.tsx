@@ -142,7 +142,7 @@ export default function OutcomeStateScreen({ navigation }: Props) {
           
           <TouchableOpacity 
             style={[styles.button, styles.secondaryButton]} 
-            onPress={() => navigation.navigate('AgentProcessing')}
+            onPress={() => navigation.navigate('AgentTrace')}
           >
             <Text style={styles.secondaryButtonText}>View Agent Trace</Text>
           </TouchableOpacity>

@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
 import { colors } from '../theme/colors';
 import { AppContext } from '../state/AppContext';
+import { runAgentPipeline } from '../services/agentPipeline';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AgentProcessing'>;
@@ -67,69 +68,6 @@ const TRACE_STEPS = [
   'Patient state updated'
 ];
 
-// Mock Output Data to store in Context
-const MOCK_EXTRACTION_DATA = {
-  diagnoses: ['Type 2 diabetes mellitus', 'Hypertension', 'Advanced chronic kidney disease risk', 'Anemia'],
-  symptoms: ['Bilateral pedal edema', 'Reduced urine output', 'Extreme fatigue', 'Poor appetite', 'Shortness of breath on exertion'],
-  abnormalLabs: ['Creatinine 3.2 mg/dL, worsened from 1.8 mg/dL six months ago', 'eGFR 22 mL/min/1.73m²', 'HbA1c 10.1%', 'Potassium 5.8 mEq/L', 'Hemoglobin 8.4 g/dL'],
-  medications: ['Metformin 1000 mg twice daily', 'Amlodipine 10 mg once daily'],
-  followUpGaps: ['Last nephrology review 8 months ago', 'No dialysis planning discussion documented', 'No renal diet counseling documented', 'No caregiver escalation plan documented']
-};
-
-const MOCK_DETERIORATION_DATA = {
-  deteriorationPatterns: [
-    'Creatinine worsened from 1.8 to 3.2 mg/dL in six months',
-    'eGFR 22 suggests severely reduced kidney function',
-    'Potassium 5.8 is a high-risk electrolyte abnormality',
-    'Three admissions in six months suggest unstable disease control',
-    'HbA1c 10.1% suggests poor glycemic control',
-    'Metformin safety concern due to low eGFR',
-    'No nephrology review for 8 months despite progressive renal risk'
-  ],
-  confidence: '93%',
-  topInsight: 'This synthetic patient shows progressive renal deterioration with high potassium risk, repeated admissions, poor diabetes control, and missed specialist follow-up.'
-};
-
-const MOCK_IMPACT_DATA = {
-  riskLevel: 'HIGH',
-  urgency: 'Urgent clinician/nephrology review required in a real healthcare setting.',
-  whyItMatters: 'The combination of worsening creatinine, eGFR 22, high potassium, edema, reduced urine output, anemia, uncontrolled diabetes, and missed nephrology follow-up suggests high risk of avoidable deterioration if the patient is not escalated.',
-  possibleConsequences: [
-    'Worsening kidney failure',
-    'Hyperkalemia-related cardiac rhythm disturbance',
-    'Fluid overload and worsening breathlessness',
-    'Avoidable emergency admission',
-    'Delayed dialysis planning',
-    'Continued medication safety risk'
-  ]
-};
-
-const MOCK_CARE_PLAN_DATA = [
-  { priority: 'Critical', action: 'Urgent physician/nephrology review', reason: 'eGFR 22, rising creatinine, reduced urine output, edema, and high potassium', timeline: 'Same day / within 24 hours' },
-  { priority: 'Critical', action: 'Medication safety review', reason: 'Metformin is documented despite very low eGFR and should be reviewed by a clinician', timeline: 'Immediate' },
-  { priority: 'High', action: 'Repeat renal profile and potassium', reason: 'Hyperkalemia and renal deterioration require reassessment', timeline: 'Same day' },
-  { priority: 'High', action: 'Caregiver alert and follow-up reminder', reason: 'Repeated admissions and missed follow-up suggest continuity failure', timeline: 'Today' },
-  { priority: 'Medium', action: 'Dietitian referral and renal diet education', reason: 'Advanced CKD risk requires dietary counseling', timeline: 'Within 1 week' }
-];
-
-const MOCK_EXECUTION_DATA = {
-  logs: [
-    'POST /mock-care-tickets → Urgent nephrology review ticket created: SS-TKT-8841',
-    'POST /mock-appointments → Nephrology review scheduled: Tomorrow 10:30 AM',
-    'POST /mock-alerts → Caregiver alert generated: HIGH renal risk detected',
-    'PATCH /mock-dashboard/patient/SS-204 → Risk flag updated to HIGH',
-    'POST /mock-reminders → 24-hour follow-up reminder created'
-  ],
-  updatedState: {
-    risk: 'HIGH',
-    careStatus: 'Escalated for urgent follow-up',
-    appointment: 'Nephrology review scheduled — Tomorrow 10:30 AM',
-    caregiverAlert: 'Sent — High renal risk warning',
-    dashboardFlag: 'HIGH RISK ACTIVE',
-    followUp: '24-hour follow-up reminder created'
-  }
-};
-
 export default function AgentProcessingScreen({ navigation, route }: Props) {
   const patientCase = route.params?.patientCase;
   const { setAgentData } = useContext(AppContext);
@@ -162,20 +100,17 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
       setTraceVisibleIndex(TRACE_STEPS.length - 1);
       setIsFinished(true);
       
-      // Save data to context
-      setAgentData({
-        extractionData: MOCK_EXTRACTION_DATA,
-        deteriorationData: MOCK_DETERIORATION_DATA,
-        impactData: MOCK_IMPACT_DATA,
-        carePlanData: MOCK_CARE_PLAN_DATA,
-        executionData: MOCK_EXECUTION_DATA
-      });
+      if (patientCase) {
+        // Here we call the newly refactored pipeline, which returns the mock data
+        const pipelineData = await runAgentPipeline(patientCase);
+        setAgentData(pipelineData);
+      }
     };
     
     runAgents();
     
     return () => { isMounted = false; };
-  }, []);
+  }, [patientCase, setAgentData]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -211,8 +146,8 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
               return null; // Only show up to the next pending agent
             }
 
-            let cardStyle = [styles.agentCard];
-            let titleStyle = [styles.agentTitle];
+            let cardStyle: any[] = [styles.agentCard];
+            let titleStyle: any[] = [styles.agentTitle];
             let textColor = colors.textMuted;
             let showLoading = false;
 
@@ -266,13 +201,26 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
         )}
 
         {isFinished && (
-          <TouchableOpacity 
-            style={styles.button} 
-            onPress={() => navigation.navigate('RiskDashboard')}
-          >
-            <Text style={styles.buttonText}>View Risk Dashboard</Text>
-          </TouchableOpacity>
+          <View style={{ gap: 12 }}>
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => navigation.navigate('RiskDashboard')}
+            >
+              <Text style={styles.buttonText}>View Risk Dashboard</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[styles.button, styles.secondaryButton]} 
+              onPress={() => navigation.navigate('AgentTrace')}
+            >
+              <Text style={styles.secondaryButtonText}>View Agent Trace Logs</Text>
+            </TouchableOpacity>
+          </View>
         )}
+
+        <Text style={styles.devNote}>
+          Current build uses mock agent outputs for stable hackathon demo. The service layer is structured for Gemini structured JSON calls and Antigravity orchestration.
+        </Text>
         
         <View style={{ height: 40 }} />
 
@@ -314,4 +262,8 @@ const styles = StyleSheet.create({
   
   button: { backgroundColor: colors.primary, borderRadius: 12, padding: 18, alignItems: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5 },
   buttonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+  secondaryButton: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border, elevation: 0, shadowOpacity: 0 },
+  secondaryButtonText: { color: colors.text, fontSize: 16, fontWeight: 'bold' },
+  
+  devNote: { color: colors.textMuted, fontSize: 12, textAlign: 'center', marginTop: 24, fontStyle: 'italic', opacity: 0.7, paddingHorizontal: 10 }
 });

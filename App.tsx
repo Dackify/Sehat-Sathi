@@ -11,6 +11,7 @@ import AgentProcessingScreen from './src/screens/AgentProcessingScreen';
 import RiskDashboardScreen from './src/screens/RiskDashboardScreen';
 import ActionExecutionScreen from './src/screens/ActionExecutionScreen';
 import OutcomeStateScreen from './src/screens/OutcomeStateScreen';
+import AgentTraceScreen from './src/screens/AgentTraceScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -57,7 +58,12 @@ export default function App() {
           <Stack.Screen 
             name="OutcomeState" 
             component={OutcomeStateScreen} 
-            options={{ title: 'Outcome' }} 
+            options={{ title: 'Outcome State', headerBackVisible: false }} 
+          />
+          <Stack.Screen 
+            name="AgentTrace" 
+            component={AgentTraceScreen} 
+            options={{ title: 'Agent Trace' }} 
           />
         </Stack.Navigator>
       </NavigationContainer>

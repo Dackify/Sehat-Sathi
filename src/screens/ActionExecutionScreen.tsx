@@ -66,9 +66,33 @@ export default function ActionExecutionScreen({ navigation }: Props) {
     setIsExecuting(true);
     setVisibleLogs([]);
 
-    for (let i = 0; i < MOCK_LOGS.length; i++) {
+    let logsToRender = MOCK_LOGS;
+    let backendSuccess = false;
+
+    try {
+      const response = await fetch('http://localhost:8000/execute-workflow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patient_id: "Synthetic Patient SS-204",
+          action_plan: ACTION_PLAN
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.execution_logs && data.execution_logs.length > 0) {
+          logsToRender = data.execution_logs;
+        }
+        backendSuccess = true;
+      }
+    } catch (error) {
+      console.warn("Backend execution unavailable, falling back to local simulation.");
+    }
+
+    for (let i = 0; i < logsToRender.length; i++) {
       await new Promise(r => setTimeout(r, 1500));
-      setVisibleLogs(prev => [...prev, MOCK_LOGS[i]]);
+      setVisibleLogs(prev => [...prev, logsToRender[i]]);
     }
 
     await new Promise(r => setTimeout(r, 500));

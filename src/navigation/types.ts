@@ -17,4 +17,5 @@ export type RootStackParamList = {
   RiskDashboard: undefined;
   ActionExecution: undefined;
   OutcomeState: undefined;
+  AgentTrace: undefined;
 };
