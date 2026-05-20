@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ShifaSathi",
-    "slug": "ShifaSathi",
+    "name": "Shifa Sathi",
+    "slug": "shifa-sathi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.medifyhelp.shifasathi",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -25,6 +26,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fdce8f36-45b8-4910-8ca6-b7915623e574"
+      }
     }
   }
 }

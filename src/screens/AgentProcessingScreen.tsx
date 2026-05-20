@@ -70,7 +70,7 @@ const TRACE_STEPS = [
 
 export default function AgentProcessingScreen({ navigation, route }: Props) {
   const patientCase = route.params?.patientCase;
-  const { setAgentData } = useContext(AppContext);
+  const { agentData, setAgentData } = useContext(AppContext);
   
   const [currentAgentIndex, setCurrentAgentIndex] = useState(-1);
   const [completedAgents, setCompletedAgents] = useState<number[]>([]);
@@ -116,8 +116,8 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
-        <Text style={styles.headerTitle}>Agent Processing</Text>
-        <Text style={styles.headerSubtitle}>Multi-Agent Orchestration Pipeline</Text>
+        <Text style={styles.headerTitle}>Agentic Workflow Running</Text>
+        <Text style={styles.headerSubtitle}>Multi-Agent Clinical Content-to-Action Pipeline</Text>
 
         {patientCase && (
           <View style={styles.previewCard}>
@@ -133,6 +133,11 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
             <Text style={styles.previewStatus}>
               {isFinished ? 'Data ingested successfully. Analysis complete.' : 'Data ingested successfully. Agents analyzing...'}
             </Text>
+            {isFinished && agentData?.source && (
+              <View style={styles.sourceBadge}>
+                <Text style={styles.sourceText}>Pipeline source: {agentData.source === 'gemini' ? 'Gemini Backend' : 'Mock Fallback'}</Text>
+              </View>
+            )}
           </View>
         )}
 
@@ -201,6 +206,14 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
         )}
 
         {isFinished && (
+          <View style={styles.completionContainer}>
+            <Text style={styles.completionText}>
+              Shifa Sathi has converted fragmented synthetic clinical content into a care coordination workflow.
+            </Text>
+          </View>
+        )}
+
+        {isFinished && (
           <View style={{ gap: 12 }}>
             <TouchableOpacity 
               style={styles.button} 
@@ -222,6 +235,10 @@ export default function AgentProcessingScreen({ navigation, route }: Props) {
           Current build uses mock agent outputs for stable hackathon demo. The service layer is structured for Gemini structured JSON calls and Antigravity orchestration.
         </Text>
         
+        <Text style={styles.footerDisclaimer}>
+          Synthetic demo only. No real clinical action performed.
+        </Text>
+        
         <View style={{ height: 40 }} />
 
       </ScrollView>
@@ -239,6 +256,8 @@ const styles = StyleSheet.create({
   previewTitle: { color: colors.primaryLight, fontWeight: 'bold', fontSize: 15, marginBottom: 8 },
   previewContent: { color: colors.text, fontSize: 13, marginBottom: 4 },
   previewStatus: { color: colors.primary, fontSize: 12, marginTop: 8, fontStyle: 'italic' },
+  sourceBadge: { alignSelf: 'flex-start', backgroundColor: 'rgba(245, 158, 11, 0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4, marginTop: 8, borderWidth: 1, borderColor: '#F59E0B' },
+  sourceText: { color: '#F59E0B', fontSize: 11, fontWeight: 'bold' },
   
   agentsContainer: { marginBottom: 24 },
   agentCard: { backgroundColor: colors.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.border },
@@ -265,5 +284,9 @@ const styles = StyleSheet.create({
   secondaryButton: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border, elevation: 0, shadowOpacity: 0 },
   secondaryButtonText: { color: colors.text, fontSize: 16, fontWeight: 'bold' },
   
-  devNote: { color: colors.textMuted, fontSize: 12, textAlign: 'center', marginTop: 24, fontStyle: 'italic', opacity: 0.7, paddingHorizontal: 10 }
+  completionContainer: { backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: 16, borderRadius: 12, marginBottom: 24, borderWidth: 1, borderColor: colors.success },
+  completionText: { color: colors.text, fontSize: 14, lineHeight: 22, textAlign: 'center', fontWeight: '500' },
+  
+  devNote: { color: colors.textMuted, fontSize: 12, textAlign: 'center', marginTop: 24, fontStyle: 'italic', opacity: 0.7, paddingHorizontal: 10 },
+  footerDisclaimer: { color: colors.textMuted, fontSize: 12, textAlign: 'center', marginTop: 12, fontStyle: 'italic', opacity: 0.6 }
 });

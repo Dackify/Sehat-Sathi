@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode } from 'react';
 import { PatientCase } from '../navigation/types';
 
 export type AgentOutputData = {
+  source?: string;
   extractionData?: any;
   deteriorationData?: any;
   impactData?: any;

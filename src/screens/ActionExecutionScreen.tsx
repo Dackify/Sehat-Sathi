@@ -106,8 +106,8 @@ export default function ActionExecutionScreen({ navigation }: Props) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Action Execution Center</Text>
-          <Text style={styles.headerSubtitle}>Recommended care coordination actions generated from agentic clinical reasoning.</Text>
+          <Text style={styles.headerTitle}>Generated Care Coordination Actions</Text>
+          <Text style={styles.headerSubtitle}>These actions are simulated for demonstration and do not trigger real clinical workflows.</Text>
         </View>
 
         {/* Section 1 — Priority Action Plan */}
@@ -197,7 +197,7 @@ export default function ActionExecutionScreen({ navigation }: Props) {
         )}
 
         <Text style={styles.disclaimerText}>
-          These are mock workflow actions for hackathon demonstration. No real appointment, message, or clinical action is executed.
+          Synthetic demo only. No real clinical action performed.
         </Text>
         
         <View style={{ height: 40 }} />

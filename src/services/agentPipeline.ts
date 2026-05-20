@@ -136,6 +136,7 @@ export const runAgentPipeline = async (patientCase: PatientCase) => {
     if (response.ok) {
       const data = await response.json();
       return {
+        source: data.source || 'gemini',
         extractionData: data.extraction,
         deteriorationData: data.intelligence,
         impactData: data.impact,
@@ -153,6 +154,7 @@ export const runAgentPipeline = async (patientCase: PatientCase) => {
   const stage3 = await runWorkflowExecutionSimulation(stage2);
 
   return {
+    source: 'mock_fallback_local',
     ...stage1,
     ...stage2,
     ...stage3

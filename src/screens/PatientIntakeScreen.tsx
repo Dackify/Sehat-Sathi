@@ -48,14 +48,16 @@ export default function PatientIntakeScreen({ navigation }: Props) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
         <View style={styles.header}>
+          <Text style={styles.demoModeTag}>Demo Mode: Synthetic Patient Only</Text>
           <Text style={styles.title}>Shifa Sathi</Text>
           <Text style={styles.subtitle}>Agentic Clinical Content-to-Action System</Text>
+          <Text style={styles.valueProp}>Transforms synthetic fragmented clinical records into structured insight, coordinated action, and visible outcome change.</Text>
         </View>
 
         <View style={styles.warningCard}>
           <Text style={styles.warningTitle}>⚠️ PROTOTYPE SAFETY NOTICE</Text>
           <Text style={styles.warningText}>
-            Synthetic demo only. Do not upload real patient data. This prototype does not provide diagnosis or treatment.
+            This prototype uses synthetic/anonymized data only. Do not upload real patient data. Shifa Sathi does not provide diagnosis or treatment.
           </Text>
         </View>
 
@@ -64,7 +66,7 @@ export default function PatientIntakeScreen({ navigation }: Props) {
             <Text style={styles.secondaryButtonText}>Use Demo Case</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.secondaryButtonOutline} onPress={simulateUpload}>
-            <Text style={styles.secondaryButtonTextOutline}>Upload Report</Text>
+            <Text style={styles.secondaryButtonTextOutline}>Simulate Report Upload</Text>
           </TouchableOpacity>
         </View>
 
@@ -123,9 +125,13 @@ export default function PatientIntakeScreen({ navigation }: Props) {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={initiateAssessment}>
-          <Text style={styles.buttonText}>INITIATE ASSESSMENT</Text>
+        <TouchableOpacity style={styles.buttonMain} onPress={initiateAssessment}>
+          <Text style={styles.buttonMainText}>INITIATE ASSESSMENT</Text>
         </TouchableOpacity>
+        
+        <Text style={styles.footerDisclaimer}>
+          Synthetic demo only. No real clinical action performed.
+        </Text>
         
         <View style={{ height: 40 }} />
 
@@ -137,24 +143,27 @@ export default function PatientIntakeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { padding: 20 },
-  header: { marginTop: 10, marginBottom: 20, alignItems: 'center' },
-  title: { fontSize: 28, fontWeight: 'bold', color: colors.primaryLight, marginBottom: 4 },
-  subtitle: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
-  warningCard: { backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 1, borderColor: colors.danger, borderRadius: 12, padding: 16, marginBottom: 20 },
-  warningTitle: { color: colors.danger, fontWeight: 'bold', fontSize: 14, marginBottom: 8 },
+  header: { marginTop: 10, marginBottom: 24, alignItems: 'center' },
+  demoModeTag: { color: '#F59E0B', fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 },
+  title: { fontSize: 32, fontWeight: 'bold', color: colors.primaryLight, marginBottom: 4 },
+  subtitle: { fontSize: 16, color: colors.text, textAlign: 'center', fontWeight: '600', marginBottom: 8 },
+  valueProp: { fontSize: 13, color: colors.textMuted, textAlign: 'center', lineHeight: 20, paddingHorizontal: 10 },
+  warningCard: { backgroundColor: 'rgba(239, 68, 68, 0.05)', borderWidth: 1, borderColor: colors.danger, borderRadius: 12, padding: 16, marginBottom: 24 },
+  warningTitle: { color: colors.danger, fontWeight: 'bold', fontSize: 13, marginBottom: 8, letterSpacing: 0.5 },
   warningText: { color: colors.text, fontSize: 13, lineHeight: 20 },
   actionRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
-  secondaryButton: { flex: 1, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.primary, borderRadius: 8, paddingVertical: 12, alignItems: 'center', marginRight: 8 },
-  secondaryButtonText: { color: colors.primaryLight, fontWeight: '600', fontSize: 14 },
-  secondaryButtonOutline: { flex: 1, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border, borderRadius: 8, paddingVertical: 12, alignItems: 'center', marginLeft: 8 },
+  secondaryButton: { flex: 1, backgroundColor: 'rgba(13, 148, 136, 0.1)', borderWidth: 1, borderColor: colors.primary, borderRadius: 10, paddingVertical: 14, alignItems: 'center', marginRight: 8 },
+  secondaryButtonText: { color: colors.primaryLight, fontWeight: 'bold', fontSize: 14 },
+  secondaryButtonOutline: { flex: 1, backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border, borderRadius: 10, paddingVertical: 14, alignItems: 'center', marginLeft: 8 },
   secondaryButtonTextOutline: { color: colors.text, fontWeight: '600', fontSize: 14 },
-  formContainer: { backgroundColor: colors.card, borderRadius: 16, padding: 16, marginBottom: 24, borderWidth: 1, borderColor: colors.border },
-  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-  inputGroup: { marginBottom: 16 },
+  formContainer: { backgroundColor: colors.card, borderRadius: 16, padding: 20, marginBottom: 24, borderWidth: 1, borderColor: colors.border },
+  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: 'bold', marginBottom: 20 },
+  inputGroup: { marginBottom: 18 },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  label: { color: colors.textMuted, fontSize: 13, marginBottom: 6, fontWeight: '500' },
-  input: { backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 12, color: colors.text, fontSize: 14 },
-  textArea: { backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 12, color: colors.text, fontSize: 14, minHeight: 80, textAlignVertical: 'top' },
-  button: { backgroundColor: colors.primary, borderRadius: 12, padding: 18, alignItems: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5 },
-  buttonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' }
+  label: { color: colors.textMuted, fontSize: 13, marginBottom: 8, fontWeight: '600' },
+  input: { backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border, borderRadius: 10, padding: 14, color: colors.text, fontSize: 14 },
+  textArea: { backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border, borderRadius: 10, padding: 14, color: colors.text, fontSize: 14, minHeight: 90, textAlignVertical: 'top' },
+  buttonMain: { backgroundColor: colors.primary, borderRadius: 12, paddingVertical: 20, alignItems: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 6 },
+  buttonMainText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', letterSpacing: 1 },
+  footerDisclaimer: { color: colors.textMuted, fontSize: 12, textAlign: 'center', marginTop: 24, fontStyle: 'italic', opacity: 0.6 }
 });

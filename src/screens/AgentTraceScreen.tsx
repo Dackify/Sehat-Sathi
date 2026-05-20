@@ -171,11 +171,15 @@ export default function AgentTraceScreen({ navigation }: Props) {
         </View>
 
         <TouchableOpacity 
-          style={styles.button} 
+          style={styles.buttonMain} 
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.buttonText}>Go Back</Text>
+          <Text style={styles.buttonMainText}>Go Back</Text>
         </TouchableOpacity>
+
+        <Text style={styles.footerDisclaimer}>
+          Synthetic demo only. No real clinical action performed.
+        </Text>
 
         <View style={{ height: 40 }} />
 
@@ -223,6 +227,7 @@ const styles = StyleSheet.create({
   noteText: { color: colors.text, fontSize: 14, lineHeight: 22 },
   warningText: { color: '#F59E0B', fontSize: 14, lineHeight: 22, fontWeight: '500' },
   
-  button: { backgroundColor: colors.primary, borderRadius: 12, padding: 18, alignItems: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5, marginTop: 10 },
-  buttonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+  buttonMain: { backgroundColor: colors.primary, borderRadius: 12, paddingVertical: 20, alignItems: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 6, marginTop: 10 },
+  buttonMainText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', letterSpacing: 1 },
+  footerDisclaimer: { color: colors.textMuted, fontSize: 12, textAlign: 'center', marginTop: 24, fontStyle: 'italic', opacity: 0.6 }
 });

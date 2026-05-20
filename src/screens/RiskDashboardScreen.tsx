@@ -184,7 +184,7 @@ export default function RiskDashboardScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <Text style={styles.disclaimerText}>
-          Synthetic demo only. Not for diagnosis or treatment.
+          Synthetic demo only. No real clinical action performed.
         </Text>
 
       </ScrollView>

@@ -2,13 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, Any, List
+import os
 
 from services.agent_pipeline import (
     run_clinical_intake,
     run_extraction_and_intelligence,
     run_impact_and_action_planning,
     run_execution_preview,
-    build_agent_trace
+    build_agent_trace,
+    get_pipeline_source,
+    reset_pipeline_source
 )
 
 app = FastAPI(title="Shifa Sathi Agentic Pipeline")
@@ -41,8 +44,22 @@ class ExecuteRequest(BaseModel):
     patient_id: str
     action_plan: List[Dict[str, Any]]
 
+@app.get("/health")
+def health_check():
+    from dotenv import load_dotenv
+    load_dotenv()
+    gemini_ready = bool(os.getenv("GEMINI_API_KEY"))
+    return {
+        "status": "ok",
+        "service": "Shifa Sathi backend",
+        "gemini_ready": gemini_ready
+    }
+
 @app.post("/analyze-patient")
 def analyze_patient(request: AnalyzeRequest):
+    # Reset tracking before run
+    reset_pipeline_source()
+    
     # 1. Clinical Intake
     unstructured_text = run_clinical_intake(request.patient_case.dict())
     
@@ -59,6 +76,7 @@ def analyze_patient(request: AnalyzeRequest):
     trace = build_agent_trace()
     
     return {
+        "source": get_pipeline_source(),
         "extraction": stage1.get("extraction", {}),
         "intelligence": stage1.get("intelligence", {}),
         "impact": stage2.get("impact", {}),

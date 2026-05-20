@@ -1,3 +1,4 @@
+import json
 from .gemini_service import call_gemini_structured
 from prompts.agent_prompts import EXTRACTION_INTELLIGENCE_PROMPT, IMPACT_ACTION_PROMPT, WORKFLOW_EXECUTION_PROMPT
 from .mock_execution import (
@@ -53,36 +54,43 @@ MOCK_CARE_PLAN_DATA = [
     { "priority": "Medium", "action": "Dietitian referral and renal diet education", "reason": "Advanced CKD risk requires dietary counseling", "timeline": "Within 1 week" }
 ]
 
+# Track source globally for the duration of the pipeline execution
+PIPELINE_SOURCE = "gemini"
+
 def run_clinical_intake(patient_case: dict):
     # Combines patient case into structured block
     unstructured_text = "\\n".join([f"{k}: {v}" for k, v in patient_case.items()])
     return unstructured_text
 
 def run_extraction_and_intelligence(unstructured_text: str):
+    global PIPELINE_SOURCE
     gemini_result = call_gemini_structured(EXTRACTION_INTELLIGENCE_PROMPT, unstructured_text)
-    if gemini_result:
+    if gemini_result and "extraction" in gemini_result and "intelligence" in gemini_result:
         return gemini_result
     
     # Fallback to mock data
+    PIPELINE_SOURCE = "mock_fallback"
     return {
         "extraction": MOCK_EXTRACTION_DATA,
         "intelligence": MOCK_DETERIORATION_DATA
     }
 
 def run_impact_and_action_planning(stage1_output: dict):
-    import json
+    global PIPELINE_SOURCE
     gemini_result = call_gemini_structured(IMPACT_ACTION_PROMPT, json.dumps(stage1_output))
-    if gemini_result:
+    if gemini_result and "impact" in gemini_result and "action_plan" in gemini_result:
         return gemini_result
     
     # Fallback to mock data
+    PIPELINE_SOURCE = "mock_fallback"
     return {
         "impact": MOCK_IMPACT_DATA,
         "action_plan": MOCK_CARE_PLAN_DATA
     }
 
 def run_execution_preview():
-    # Simulate execution using mock APIs
+    # Simulate execution using mock APIs deterministically.
+    # We do not use Gemini for this to keep the demo execution reliable and timestamped cleanly.
     logs = [
         f"[{create_escalation_ticket()['timestamp']}] POST /mock-care-tickets -> Urgent nephrology review ticket created: SS-TKT-8841",
         f"[{schedule_mock_appointment()['timestamp']}] POST /mock-appointments -> Nephrology review scheduled: Tomorrow 10:30 AM",
@@ -129,3 +137,11 @@ def build_agent_trace():
         "Workflow execution simulated",
         "Patient state updated"
     ]
+
+def get_pipeline_source():
+    global PIPELINE_SOURCE
+    return PIPELINE_SOURCE
+
+def reset_pipeline_source():
+    global PIPELINE_SOURCE
+    PIPELINE_SOURCE = "gemini"

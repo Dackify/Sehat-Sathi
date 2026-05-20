@@ -140,18 +140,75 @@ Final clinical decisions require qualified healthcare professionals.
 
 ## How to Run
 
-### Frontend
+### Frontend (Expo)
 ```bash
 npm install
 npx expo start
 ```
+*Note: API keys are intentionally NOT stored or called from the frontend to ensure strict security and prevent key leakage in the client app. All AI logic is securely routed through the FastAPI backend.*
 
-### Backend
+### Backend (FastAPI + Gemini)
+The backend is designed to run locally.
+
+1. **Setup environment:**
 ```bash
 cd backend
 pip install -r requirements.txt
+```
+
+2. **Configure Gemini (Optional but recommended):**
+Copy the example environment file and add your Gemini 2.5 Flash key:
+```bash
+cp .env.example .env
+# Edit .env and add GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+3. **Start the server:**
+```bash
 uvicorn main:app --reload
 ```
+The backend will run on `http://localhost:8000`.
+
+### Fallback Mechanics
+To ensure the hackathon demo remains stable under any circumstance (e.g., wifi failure, rate limiting, missing API key):
+- If the `GEMINI_API_KEY` is present and valid, the backend dynamically orchestrates structured JSON reasoning via Google Gemini.
+- If the key is missing or an API error occurs, the backend automatically intercepts the failure and returns deterministic **mock fallback data**.
+- If the entire FastAPI backend is offline, the React Native frontend detects the network failure and utilizes a local, on-device mock orchestrator.
+- The UI actively displays whether the pipeline source is "Gemini Backend" or "Mock Fallback".
+## Android APK Build
+
+Step 1:
+Install EAS CLI:
+```bash
+npm install -g eas-cli
+```
+
+Step 2:
+Login:
+```bash
+eas login
+```
+
+Step 3:
+Configure project if needed:
+```bash
+eas build:configure
+```
+
+Step 4:
+Build APK:
+```bash
+eas build -p android --profile preview
+```
+
+Step 5:
+After build completes, download the APK from the EAS build link and upload it to Google Drive for hackathon submission.
+
+**Note:**
+- Preview profile generates APK for direct installation.
+- Production profile generates AAB for Play Store style release.
+- Do not include secrets in the frontend.
+- Backend URL should be configured through `EXPO_PUBLIC_API_BASE_URL`.
 
 ## Submission Artifacts
 Mandatory:

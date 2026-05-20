@@ -1,0 +1,22 @@
+# Task List
+
+- [x] interpret hackathon challenge
+- [x] define Shifa Sathi concept
+- [x] design synthetic patient case
+- [x] create Expo Go app structure
+- [x] create Patient Intake screen
+- [x] add Use Demo Case button
+- [x] add six-agent processing screen
+- [x] add Risk Dashboard
+- [x] add Action Execution Center
+- [x] add Outcome State screen
+- [x] add Agent Trace screen
+- [x] create FastAPI backend structure
+- [x] create Gemini-ready service layer
+- [x] create mock execution APIs
+- [x] add Cloud Run deployment readiness
+- [x] add EAS APK build readiness
+- [x] create README documentation
+- [x] prepare demo video checklist
+- [x] prepare Antigravity usage checklist
+- [x] prepare final submission checklist

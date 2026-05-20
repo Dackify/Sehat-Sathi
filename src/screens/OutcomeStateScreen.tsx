@@ -109,7 +109,7 @@ export default function OutcomeStateScreen({ navigation }: Props) {
           <View style={styles.impactCard}>
             <Text style={styles.impactTitle}>What changed?</Text>
             <Text style={styles.impactText}>
-              Shifa Sathi converted fragmented synthetic clinical information into a coordinated care workflow. The system identified renal deterioration, high potassium risk, repeated admissions, medication safety concern, and missed specialist follow-up, then simulated escalation through appointment scheduling, caregiver alerting, dashboard flagging, and follow-up reminder creation.
+              Shifa Sathi transformed a passive synthetic patient record into an active care coordination workflow: risk was flagged, nephrology review was scheduled, caregiver alert was generated, follow-up reminder was created, and the dashboard state was updated.
             </Text>
           </View>
         </View>
@@ -128,7 +128,7 @@ export default function OutcomeStateScreen({ navigation }: Props) {
         </View>
 
         <Text style={styles.disclaimerText}>
-          This is a simulated outcome for hackathon demonstration only. No real clinical action was performed.
+          Synthetic demo only. No real clinical action performed.
         </Text>
 
         {/* Section 4 — Final CTA */}
